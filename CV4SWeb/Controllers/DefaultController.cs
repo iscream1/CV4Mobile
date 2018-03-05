@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -9,18 +8,18 @@ using System.Web.Http;
 
 namespace CV4SWeb.Controllers
 {
-    //[RoutePrefix("api/Upload")]
-    public class ImageController : ApiController
+    [RoutePrefix("api/Upload")]
+    public class DefaultController : ApiController
     {
-        /*[Route("user/PostUserImage")]
+        [Route("user/PostUserImage2")]
         [AllowAnonymous]
-        public async Task<HttpResponseMessage> PostUserImage()
+        public HttpResponseMessage PostUserImage()
         {
             Dictionary<string, object> dict = new Dictionary<string, object>();
             try
             {
                 var httpRequest = HttpContext.Current.Request;
-                
+
                 foreach (string file in httpRequest.Files)
                 {
                     HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.Created);
@@ -45,7 +44,7 @@ namespace CV4SWeb.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound, dict);
             }
             return Request.CreateResponse(HttpStatusCode.NotFound, dict);
-        }*/
+        }
 
         // GET api/values
         public IEnumerable<string> Get()
@@ -59,27 +58,10 @@ namespace CV4SWeb.Controllers
             return "value";
         }
 
-        public HttpResponseMessage Post()
+        // POST api/values
+        public void Post([FromBody]string value)
         {
-            var task = this.Request.Content.ReadAsStreamAsync();
-            task.Wait();
-            Stream requestStream = task.Result;
 
-            try
-            {
-                Stream fileStream = File.Create(HttpContext.Current.Server.MapPath("~/img3.jpg"));
-                requestStream.CopyTo(fileStream);
-                fileStream.Close();
-                requestStream.Close();
-            }
-            catch (IOException)
-            {
-                throw new HttpResponseException(HttpStatusCode.InternalServerError);
-            }
-
-            HttpResponseMessage response = new HttpResponseMessage();
-            response.StatusCode = HttpStatusCode.Created;
-            return response;
         }
 
         // PUT api/values/5
