@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -59,7 +61,7 @@ namespace CV4SWeb.Controllers
             return "value";
         }
 
-        public HttpResponseMessage Post()
+        public string Post()
         {
             var task = this.Request.Content.ReadAsStreamAsync();
             task.Wait();
@@ -77,9 +79,9 @@ namespace CV4SWeb.Controllers
                 throw new HttpResponseException(HttpStatusCode.InternalServerError);
             }
 
-            HttpResponseMessage response = new HttpResponseMessage();
-            response.StatusCode = HttpStatusCode.Created;
-            return response;
+            //HttpResponseMessage response = new HttpResponseMessage();
+            //response.StatusCode = HttpStatusCode.Created;
+            return JsonConvert.SerializeObject(new { Dummy = "descriptor" });
         }
 
         // PUT api/values/5

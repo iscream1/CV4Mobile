@@ -287,3 +287,4 @@ __pycache__/
 *.odx.cs
 *.xsd.cs
 CV4SWeb/CV4SWeb.csproj
+*.jpg
