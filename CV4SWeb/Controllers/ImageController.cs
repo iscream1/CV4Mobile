@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -61,18 +62,25 @@ namespace CV4SWeb.Controllers
             return "value";
         }
 
-        public string Post()
+        public async Task<string> PostAsync()
         {
-            var task = this.Request.Content.ReadAsStreamAsync();
+            /*var task = this.Request.Content.ReadAsStreamAsync();
             task.Wait();
-            Stream requestStream = task.Result;
+            Stream requestStream = task.Result;*/
 
             try
             {
-                Stream fileStream = File.Create(HttpContext.Current.Server.MapPath("~/img3.jpg"));
-                requestStream.CopyTo(fileStream);
-                fileStream.Close();
-                requestStream.Close();
+                string root = HttpContext.Current.Server.MapPath("~/App_Data");
+                var provider = new MultipartFormDataStreamProvider(root);
+
+                await Request.Content.ReadAsMultipartAsync(provider);
+
+                // This illustrates how to get the file names.
+                foreach (MultipartFileData file in provider.FileData)
+                {
+                    Trace.WriteLine(file.Headers.ContentDisposition.FileName);
+                    Trace.WriteLine("Server file path: " + file.LocalFileName);
+                }
             }
             catch (IOException)
             {
