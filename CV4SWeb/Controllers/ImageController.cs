@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -8,10 +9,10 @@ using System.Web.Http;
 
 namespace CV4SWeb.Controllers
 {
-    [RoutePrefix("api/Upload")]
+    //[RoutePrefix("api/Upload")]
     public class ImageController : ApiController
     {
-        [Route("user/PostUserImage")]
+        /*[Route("user/PostUserImage")]
         [AllowAnonymous]
         public async Task<HttpResponseMessage> PostUserImage()
         {
@@ -44,7 +45,7 @@ namespace CV4SWeb.Controllers
                 return Request.CreateResponse(HttpStatusCode.NotFound, dict);
             }
             return Request.CreateResponse(HttpStatusCode.NotFound, dict);
-        }
+        }*/
 
         // GET api/values
         public IEnumerable<string> Get()
@@ -58,10 +59,27 @@ namespace CV4SWeb.Controllers
             return "value";
         }
 
-        // POST api/values
-        public void Post([FromBody]string value)
+        public HttpResponseMessage Post()
         {
+            var task = this.Request.Content.ReadAsStreamAsync();
+            task.Wait();
+            Stream requestStream = task.Result;
 
+            try
+            {
+                Stream fileStream = File.Create(HttpContext.Current.Server.MapPath("~/img3.jpg"));
+                requestStream.CopyTo(fileStream);
+                fileStream.Close();
+                requestStream.Close();
+            }
+            catch (IOException)
+            {
+                throw new HttpResponseException(HttpStatusCode.InternalServerError);
+            }
+
+            HttpResponseMessage response = new HttpResponseMessage();
+            response.StatusCode = HttpStatusCode.Created;
+            return response;
         }
 
         // PUT api/values/5
