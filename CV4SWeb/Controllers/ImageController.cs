@@ -75,10 +75,8 @@ namespace CV4SWeb.Controllers
                 var provider = new MultipartFormDataStreamProvider(root);
 
                 await Request.Content.ReadAsMultipartAsync(provider);
-
-                // This illustrates how to get the file names.
-                foreach (MultipartFileData file in provider.FileData)
-                {
+                
+                MultipartFileData file = provider.FileData[0];
                     string filename=file.LocalFileName;
                     string newfilename = file.Headers.ContentDisposition.FileName.Trim(new char[]{ '\"'});
                     string newfilepath = root + '\\' + newfilename;
@@ -98,7 +96,7 @@ namespace CV4SWeb.Controllers
                         using (Mat gray = new Mat())
                         using (Mat dst = src.Clone())
                         {
-                            Cv2.CvtColor(src, gray, ColorConversionCodes.RGB2GRAY);
+                            Cv2.CvtColor(src, gray, ColorConversionCodes.BGR2GRAY);
 
                             MSER mser = MSER.Create();
                             Point[][] msers;
@@ -110,7 +108,6 @@ namespace CV4SWeb.Controllers
                     {
                         Trace.WriteLine(e);
                     }
-                }
             }
             catch (IOException)
             {
