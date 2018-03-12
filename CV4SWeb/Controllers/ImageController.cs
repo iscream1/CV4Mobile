@@ -78,8 +78,18 @@ namespace CV4SWeb.Controllers
                 // This illustrates how to get the file names.
                 foreach (MultipartFileData file in provider.FileData)
                 {
-                    Trace.WriteLine(file.Headers.ContentDisposition.FileName);
-                    Trace.WriteLine("Server file path: " + file.LocalFileName);
+                    string filename=file.LocalFileName;
+                    string newfilename = file.Headers.ContentDisposition.FileName.Trim(new char[]{ '\"'});
+                    string newfilepath = root + '\\' + newfilename;
+                    try
+                    {
+                        File.Delete(newfilepath);
+                        File.Move(filename, newfilepath);
+                    }
+                    catch(Exception e)
+                    {
+                        Trace.WriteLine(e);
+                    }
                 }
             }
             catch (IOException)
