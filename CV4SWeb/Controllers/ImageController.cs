@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using OpenCvSharp;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -90,6 +91,25 @@ namespace CV4SWeb.Controllers
                     {
                         Trace.WriteLine(e);
                     }
+
+                    try
+                    {
+                        using (Mat src = new Mat(newfilepath, ImreadModes.Color))
+                        using (Mat gray = new Mat())
+                        using (Mat dst = src.Clone())
+                        {
+                            Cv2.CvtColor(src, gray, ColorConversionCodes.RGB2GRAY);
+
+                            MSER mser = MSER.Create();
+                            Point[][] msers;
+                            Rect[] bboxes;
+                            mser.DetectRegions(gray, out msers, out bboxes);
+                        }
+                    }
+                    catch(Exception e)
+                    {
+                        Trace.WriteLine(e);
+                    }
                 }
             }
             catch (IOException)
@@ -97,8 +117,6 @@ namespace CV4SWeb.Controllers
                 throw new HttpResponseException(HttpStatusCode.InternalServerError);
             }
 
-            //HttpResponseMessage response = new HttpResponseMessage();
-            //response.StatusCode = HttpStatusCode.Created;
             return JsonConvert.SerializeObject(new { Dummy = "descriptor" });
         }
 

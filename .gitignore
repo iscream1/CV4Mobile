@@ -288,3 +288,4 @@ __pycache__/
 *.xsd.cs
 CV4SWeb/CV4SWeb.csproj
 *.jpg
+CV4SWeb/App_Data/*
